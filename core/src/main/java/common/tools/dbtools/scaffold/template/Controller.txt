@@ -1,0 +1,62 @@
+package ${pkgPath};
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import com.lang.ftd.protocol.ResponseResult;
+import common.tools.mybatisUtils.pagination.BaseModel;
+import common.tools.mybatisUtils.pagination.PageMyBatis;
+import ${managerPath};
+import ${modelPath};
+ 
+/**
+ * @Title:${clzComment}Controller
+ * @Description: TODO
+ * @author ${clzAuthor}
+ * @since ${clzCreateDate}
+ * @version V1.0  
+ */
+@RestController
+@Slf4j
+@RequestMapping("/${clzNameLC}")
+public class ${clzName}Controller {
+
+	
+	@Autowired
+	private ${clzName}Service ${clzNameLC}Service;
+
+
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseResult<PageMyBatis<${clzName}>> list(BaseModel baseModel,${clzName} ${clzNameLC}){
+		return ResponseResult.success(${clzNameLC}Service.findByPage(baseModel,${clzNameLC}));
+	}
+	
+	
+	@RequestMapping(value="/{id}",method=RequestMethod.GET)
+	public ResponseResult<${clzName}> one(@PathVariable("id")Integer id){
+		return ResponseResult.success(${clzNameLC}Service.get(id));
+	}
+	
+	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
+	public ResponseResult delete(@PathVariable("id")Integer id){
+		${clzNameLC}Service.delete(id);
+		return ResponseResult.success();
+	}
+	
+	@RequestMapping(method=RequestMethod.PUT)
+	public ResponseResult<${clzName}> update(${clzName} ${clzNameLC}){
+		${clzNameLC}Service.update4Selective(${clzNameLC});
+		return ResponseResult.success(${clzNameLC});
+				
+	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseResult<${clzName}> add(${clzName} ${clzNameLC}){
+		${clzNameLC}Service.create(${clzNameLC});
+		return ResponseResult.success(${clzNameLC});
+	}
+}

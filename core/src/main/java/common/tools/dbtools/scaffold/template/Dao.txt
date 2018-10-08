@@ -1,0 +1,18 @@
+package ${pkgPath};
+
+import common.tools.mybatisUtils.pagination.PageMyBatis;
+import common.tools.mybatisUtils.pagination.PagingCriteria;
+import common.tools.dbtools.base.dao.BaseDao;
+import ${modelPath};
+
+/**
+ * @Title:${clzComment}Dao
+ * @Description: TODO
+ * @author ${clzAuthor}
+ * @since ${clzCreateDate}
+ * @version V1.0  
+ */
+public interface ${clzName}Dao extends BaseDao<${clzName}>{
+	PageMyBatis<${clzName}> selectByPage(PagingCriteria criteria);
+}
+

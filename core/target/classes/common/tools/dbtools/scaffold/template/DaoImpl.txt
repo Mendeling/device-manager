@@ -1,0 +1,19 @@
+package ${pkgPath};
+
+import org.springframework.stereotype.Repository;
+
+import common.tools.mybatisUtils.pagination.PageMyBatis;
+import common.tools.mybatisUtils.pagination.PagingCriteria;
+import common.tools.dbtools.base.dao.impl.BaseDaoImpl;
+import ${daoPath};
+import ${modelPath};
+
+@Repository("${clzNameLC}DaoImpl")
+public class ${clzName}DaoImpl extends BaseDaoImpl<${clzName}> implements ${clzName}Dao {
+	private static final String SELECT_BY_PAGE = "${modelPath}.selectByPage";
+	
+	@Override
+	public PageMyBatis<${clzName}> selectByPage(PagingCriteria criteria) {
+		return (PageMyBatis)( getSqlSession().selectList(SELECT_BY_PAGE, criteria));
+	}
+}

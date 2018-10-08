@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.lang.ftd.manager.model.AdminOpera">
+
+	<resultMap id="result" type="com.lang.ftd.manager.model.AdminOpera">
+            <id property="id" column="id" jdbcType="VARCHAR" />
+            <result property="name" column="name" jdbcType="VARCHAR" />
+            <result property="url" column="url" jdbcType="VARCHAR" />
+            <result property="operaType" column="opera_type" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="base_field">
+		id,name,url,opera_type
+	</sql>
+	
+	<sql id="other-condition">
+            <if test= "name != null and name != '' and name != 'null' ">	and name = #{name,jdbcType=VARCHAR }</if>
+            <if test= "url != null and url != '' and url != 'null' ">	and url = #{url,jdbcType=VARCHAR }</if>
+            <if test= "operaType != null and operaType != '' and operaType != 'null' ">	and opera_type = #{operaType,jdbcType=VARCHAR }</if>
+
+ 	</sql>
+ 	
+ 	<sql id="like-condition">
+            <if test= "name != null and name != '' and name != 'null' ">	and name like "%"#{name}"%"</if>
+            <if test= "url != null and url != '' and url != 'null' ">	and url like "%"#{url}"%"</if>
+            <if test= "operaType != null and operaType != '' and operaType != 'null' ">	and opera_type like "%"#{operaType}"%"</if>
+
+ 	</sql>
+	
+	<sql id="selectByMapSQL">
+		select
+		<include refid="base_field" />
+		from t_admin_opera
+		<choose>
+		    <when test="findBy != null">
+		      	<where>
+					<include refid="other-condition" />
+				</where>
+		    </when>
+		    <when test="findByLike != null">
+		      	<where>
+					<include refid="like-condition" />
+				</where>
+		    </when>
+		</choose>
+		<if test="sortName != null">
+			order by ${sortName} ${sortBy}
+		</if>
+	</sql>
+	
+	<select id="selectByMap" resultMap="result" >
+		<include refid="selectByMapSQL" />
+	</select>
+	
+	<select id="selectCount" resultType="int" >
+		select count(*) from (
+			<include refid="selectByMapSQL" />
+		) AABBCC_
+	</select>
+	
+	<select id="selectPage" resultMap="result" >
+		<include refid="selectByMapSQL" />
+		 limit #{startRow},#{pageSize}
+	</select>
+	
+	<select id="select" resultMap="result" parameterType="java.lang.String">
+		select
+		<include refid="base_field" />
+		from t_admin_opera  
+		<where>
+			<if test="_parameter != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="selectByPage" resultMap="result">
+		select
+		<include refid="base_field" />
+		from t_admin_opera
+	</select>
+	<select id="selectByIds" resultMap="result" >
+		select
+		<include refid="base_field" />
+		from t_admin_opera  where id in (${_parameter})
+	</select>		
+
+	<insert id="insert" parameterType="com.lang.ftd.manager.model.AdminOpera" useGeneratedKeys="true" keyProperty="id">
+		insert into t_admin_opera( id,name,url,opera_type ) values (#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR},#{operaType,jdbcType=VARCHAR} )
+	</insert>
+	
+	<insert id="insert4Selective" parameterType="com.lang.ftd.manager.model.AdminOpera" useGeneratedKeys="true" keyProperty="id">
+		insert into t_admin_opera(
+            <if test="name != null and name != '' "> 
+                name,
+            </if>
+            <if test="url != null and url != '' "> 
+                url,
+            </if>
+            <if test="operaType != null and operaType != '' "> 
+                opera_type,
+            </if>
+                id)values (
+            <if test="name != null and name != '' "> 
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null and url != '' "> 
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="operaType != null and operaType != '' "> 
+                #{operaType,jdbcType=VARCHAR},
+            </if>
+            #{id,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="com.lang.ftd.manager.model.AdminOpera">
+		update t_admin_opera set name=#{name,jdbcType=VARCHAR},url=#{url,jdbcType=VARCHAR},opera_type=#{operaType,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+	</update>	
+	
+	<update id="update4Selective" parameterType="com.lang.ftd.manager.model.AdminOpera">
+		update t_admin_opera
+        <set>
+            <if test="name != null and name != '' "> 
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null and url != '' "> 
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="operaType != null and operaType != '' "> 
+                opera_type = #{operaType,jdbcType=VARCHAR},
+            </if>
+        </set>
+         where id=#{id,jdbcType=VARCHAR}
+	</update>	
+
+	<delete id="deleteByPrimaryKey">
+		delete from t_admin_opera where id = #{id,jdbcType=VARCHAR}
+	</delete>	
+
+	<delete id="delete" parameterType="com.lang.ftd.manager.model.AdminOpera">
+		delete from t_admin_opera
+		<where>
+			<if test="id != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+			<include refid="other-condition" />
+		</where>
+	</delete>	
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.ArrayList">
+		insert into t_admin_opera(
+            <if test="name != null and name != '' "> 
+                name,
+            </if>
+            <if test="url != null and url != '' "> 
+                url,
+            </if>
+            <if test="operaType != null and operaType != '' "> 
+                opera_type,
+            </if>
+                id)values<foreach collection="list" item="item" index="index" separator=",">  (
+            <if test="name != null and name != '' "> 
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null and url != '' "> 
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="operaType != null and operaType != '' "> 
+                #{operaType,jdbcType=VARCHAR},
+            </if>
+            #{id,jdbcType=VARCHAR})</foreach> 
+	</insert>		
+</mapper>
+

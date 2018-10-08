@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.lang.ftd.manager.model.AdminRole">
+
+	<resultMap id="result" type="com.lang.ftd.manager.model.AdminRole">
+            <id property="id" column="id" jdbcType="VARCHAR" />
+            <result property="roleName" column="role_name" jdbcType="VARCHAR" />
+            <result property="type" column="type" jdbcType="NUMERIC" />
+            <result property="description" column="description" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="base_field">
+		id,role_name,type,description
+	</sql>
+	
+	<sql id="other-condition">
+            <if test= "roleName != null and roleName != '' and roleName != 'null' ">	and role_name = #{roleName,jdbcType=VARCHAR }</if>
+            <if test= "type != null ">	and type = #{type,jdbcType=NUMERIC }</if>
+            <if test= "description != null and description != '' and description != 'null' ">	and description = #{description,jdbcType=VARCHAR }</if>
+
+ 	</sql>
+ 	
+ 	<sql id="like-condition">
+            <if test= "roleName != null and roleName != '' and roleName != 'null' ">	and role_name like "%"#{roleName}"%"</if>
+            <if test= "type != null ">	and type = #{type,jdbcType=NUMERIC }</if>
+            <if test= "description != null and description != '' and description != 'null' ">	and description like "%"#{description}"%"</if>
+
+ 	</sql>
+	
+	<sql id="selectByMapSQL">
+		select
+		<include refid="base_field" />
+		from t_admin_role
+		<choose>
+		    <when test="findBy != null">
+		      	<where>
+					<include refid="other-condition" />
+				</where>
+		    </when>
+		    <when test="findByLike != null">
+		      	<where>
+					<include refid="like-condition" />
+				</where>
+		    </when>
+		</choose>
+		<if test="sortName != null">
+			order by ${sortName} ${sortBy}
+		</if>
+	</sql>
+	
+	<select id="selectByMap" resultMap="result" >
+		<include refid="selectByMapSQL" />
+	</select>
+	
+	<select id="selectCount" resultType="int" >
+		select count(*) from (
+			<include refid="selectByMapSQL" />
+		) AABBCC_
+	</select>
+	
+	<select id="selectPage" resultMap="result" >
+		<include refid="selectByMapSQL" />
+		 limit #{startRow},#{pageSize}
+	</select>
+	
+	<select id="select" resultMap="result" parameterType="java.lang.String">
+		select
+		<include refid="base_field" />
+		from t_admin_role  
+		<where>
+			<if test="_parameter != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="selectByPage" resultMap="result">
+		select
+		<include refid="base_field" />
+		from t_admin_role
+	</select>
+	<select id="selectByIds" resultMap="result" >
+		select
+		<include refid="base_field" />
+		from t_admin_role  where id in (${_parameter})
+	</select>		
+
+	<insert id="insert" parameterType="com.lang.ftd.manager.model.AdminRole" useGeneratedKeys="true" keyProperty="id">
+		insert into t_admin_role( id,role_name,type,description ) values (#{id,jdbcType=VARCHAR},#{roleName,jdbcType=VARCHAR},#{type,jdbcType=NUMERIC},#{description,jdbcType=VARCHAR} )
+	</insert>
+	
+	<insert id="insert4Selective" parameterType="com.lang.ftd.manager.model.AdminRole" useGeneratedKeys="true" keyProperty="id">
+		insert into t_admin_role(
+            <if test="roleName != null and roleName != '' "> 
+                role_name,
+            </if>
+            <if test="type != null "> 
+                type,
+            </if>
+            <if test="description != null and description != '' "> 
+                description,
+            </if>
+                id)values (
+            <if test="roleName != null and roleName != '' "> 
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null "> 
+                #{type,jdbcType=NUMERIC},
+            </if>
+            <if test="description != null and description != '' "> 
+                #{description,jdbcType=VARCHAR},
+            </if>
+            #{id,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="com.lang.ftd.manager.model.AdminRole">
+		update t_admin_role set role_name=#{roleName,jdbcType=VARCHAR},type=#{type,jdbcType=NUMERIC},description=#{description,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+	</update>	
+	
+	<update id="update4Selective" parameterType="com.lang.ftd.manager.model.AdminRole">
+		update t_admin_role
+        <set>
+            <if test="roleName != null and roleName != '' "> 
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null "> 
+                type = #{type,jdbcType=NUMERIC},
+            </if>
+            <if test="description != null and description != '' "> 
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+        </set>
+         where id=#{id,jdbcType=VARCHAR}
+	</update>	
+
+	<delete id="deleteByPrimaryKey">
+		delete from t_admin_role where id = #{id,jdbcType=VARCHAR}
+	</delete>	
+
+	<delete id="delete" parameterType="com.lang.ftd.manager.model.AdminRole">
+		delete from t_admin_role
+		<where>
+			<if test="id != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+			<include refid="other-condition" />
+		</where>
+	</delete>	
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.ArrayList">
+		insert into t_admin_role(
+            <if test="roleName != null and roleName != '' "> 
+                role_name,
+            </if>
+            <if test="type != null "> 
+                type,
+            </if>
+            <if test="description != null and description != '' "> 
+                description,
+            </if>
+                id)values<foreach collection="list" item="item" index="index" separator=",">  (
+            <if test="roleName != null and roleName != '' "> 
+                #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null "> 
+                #{type,jdbcType=NUMERIC},
+            </if>
+            <if test="description != null and description != '' "> 
+                #{description,jdbcType=VARCHAR},
+            </if>
+            #{id,jdbcType=VARCHAR})</foreach> 
+	</insert>		
+</mapper>
+

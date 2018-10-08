@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.lang.ftd.manager.model.AdminRoleOpera">
+
+	<resultMap id="result" type="com.lang.ftd.manager.model.AdminRoleOpera">
+            <id property="id" column="id" jdbcType="VARCHAR" />
+            <result property="pid" column="pid" jdbcType="NUMERIC" />
+            <result property="roleId" column="role_id" jdbcType="VARCHAR" />
+            <result property="operId" column="oper_id" jdbcType="VARCHAR" />
+            <result property="description" column="description" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="base_field">
+		id,pid,role_id,oper_id,description
+	</sql>
+	
+	<sql id="other-condition">
+            <if test= "pid != null ">	and pid = #{pid,jdbcType=NUMERIC }</if>
+            <if test= "roleId != null and roleId != '' and roleId != 'null' ">	and role_id = #{roleId,jdbcType=VARCHAR }</if>
+            <if test= "operId != null and operId != '' and operId != 'null' ">	and oper_id = #{operId,jdbcType=VARCHAR }</if>
+            <if test= "description != null and description != '' and description != 'null' ">	and description = #{description,jdbcType=VARCHAR }</if>
+
+ 	</sql>
+ 	
+ 	<sql id="like-condition">
+            <if test= "pid != null ">	and pid = #{pid,jdbcType=NUMERIC }</if>
+            <if test= "roleId != null and roleId != '' and roleId != 'null' ">	and role_id like "%"#{roleId}"%"</if>
+            <if test= "operId != null and operId != '' and operId != 'null' ">	and oper_id like "%"#{operId}"%"</if>
+            <if test= "description != null and description != '' and description != 'null' ">	and description like "%"#{description}"%"</if>
+
+ 	</sql>
+	
+	<sql id="selectByMapSQL">
+		select
+		<include refid="base_field" />
+		from t_admin_role_opera
+		<choose>
+		    <when test="findBy != null">
+		      	<where>
+					<include refid="other-condition" />
+				</where>
+		    </when>
+		    <when test="findByLike != null">
+		      	<where>
+					<include refid="like-condition" />
+				</where>
+		    </when>
+		</choose>
+		<if test="sortName != null">
+			order by ${sortName} ${sortBy}
+		</if>
+	</sql>
+	
+	<select id="selectByMap" resultMap="result" >
+		<include refid="selectByMapSQL" />
+	</select>
+	
+	<select id="selectCount" resultType="int" >
+		select count(*) from (
+			<include refid="selectByMapSQL" />
+		) AABBCC_
+	</select>
+	
+	<select id="selectPage" resultMap="result" >
+		<include refid="selectByMapSQL" />
+		 limit #{startRow},#{pageSize}
+	</select>
+	
+	<select id="select" resultMap="result" parameterType="java.lang.String">
+		select
+		<include refid="base_field" />
+		from t_admin_role_opera  
+		<where>
+			<if test="_parameter != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="selectByPage" resultMap="result">
+		select
+		<include refid="base_field" />
+		from t_admin_role_opera
+	</select>
+	<select id="selectByIds" resultMap="result" >
+		select
+		<include refid="base_field" />
+		from t_admin_role_opera  where id in (${_parameter})
+	</select>		
+
+	<insert id="insert" parameterType="com.lang.ftd.manager.model.AdminRoleOpera" useGeneratedKeys="true" keyProperty="id">
+		insert into t_admin_role_opera( id,pid,role_id,oper_id,description ) values (#{id,jdbcType=VARCHAR},#{pid,jdbcType=NUMERIC},#{roleId,jdbcType=VARCHAR},#{operId,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR} )
+	</insert>
+	
+	<insert id="insert4Selective" parameterType="com.lang.ftd.manager.model.AdminRoleOpera" useGeneratedKeys="true" keyProperty="id">
+		insert into t_admin_role_opera(
+            <if test="pid != null "> 
+                pid,
+            </if>
+            <if test="roleId != null and roleId != '' "> 
+                role_id,
+            </if>
+            <if test="operId != null and operId != '' "> 
+                oper_id,
+            </if>
+            <if test="description != null and description != '' "> 
+                description,
+            </if>
+                id)values (
+            <if test="pid != null "> 
+                #{pid,jdbcType=NUMERIC},
+            </if>
+            <if test="roleId != null and roleId != '' "> 
+                #{roleId,jdbcType=VARCHAR},
+            </if>
+            <if test="operId != null and operId != '' "> 
+                #{operId,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null and description != '' "> 
+                #{description,jdbcType=VARCHAR},
+            </if>
+            #{id,jdbcType=VARCHAR})
+	</insert>
+
+	<update id="update" parameterType="com.lang.ftd.manager.model.AdminRoleOpera">
+		update t_admin_role_opera set pid=#{pid,jdbcType=NUMERIC},role_id=#{roleId,jdbcType=VARCHAR},oper_id=#{operId,jdbcType=VARCHAR},description=#{description,jdbcType=VARCHAR} where id=#{id,jdbcType=VARCHAR}
+	</update>	
+	
+	<update id="update4Selective" parameterType="com.lang.ftd.manager.model.AdminRoleOpera">
+		update t_admin_role_opera
+        <set>
+            <if test="pid != null "> 
+                pid = #{pid,jdbcType=NUMERIC},
+            </if>
+            <if test="roleId != null and roleId != '' "> 
+                role_id = #{roleId,jdbcType=VARCHAR},
+            </if>
+            <if test="operId != null and operId != '' "> 
+                oper_id = #{operId,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null and description != '' "> 
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+        </set>
+         where id=#{id,jdbcType=VARCHAR}
+	</update>	
+
+	<delete id="deleteByPrimaryKey">
+		delete from t_admin_role_opera where id = #{id,jdbcType=VARCHAR}
+	</delete>	
+
+	<delete id="delete" parameterType="com.lang.ftd.manager.model.AdminRoleOpera">
+		delete from t_admin_role_opera
+		<where>
+			<if test="id != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+			<include refid="other-condition" />
+		</where>
+	</delete>	
+	<insert id="insertBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.ArrayList">
+		insert into t_admin_role_opera(
+            <if test="pid != null "> 
+                pid,
+            </if>
+            <if test="roleId != null and roleId != '' "> 
+                role_id,
+            </if>
+            <if test="operId != null and operId != '' "> 
+                oper_id,
+            </if>
+            <if test="description != null and description != '' "> 
+                description,
+            </if>
+                id)values<foreach collection="list" item="item" index="index" separator=",">  (
+            <if test="pid != null "> 
+                #{pid,jdbcType=NUMERIC},
+            </if>
+            <if test="roleId != null and roleId != '' "> 
+                #{roleId,jdbcType=VARCHAR},
+            </if>
+            <if test="operId != null and operId != '' "> 
+                #{operId,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null and description != '' "> 
+                #{description,jdbcType=VARCHAR},
+            </if>
+            #{id,jdbcType=VARCHAR})</foreach> 
+	</insert>		
+</mapper>
+
